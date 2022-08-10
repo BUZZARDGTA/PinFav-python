@@ -9,11 +9,6 @@ from msvcrt import getch
 
 colorama.init(autoreset=True)
 
-def enum_window_callback(hwnd, pid):
-    _, current_pid = win32process.GetWindowThreadProcessId(hwnd) # _ = tid
-    if pid == current_pid: # and win32gui.IsWindowVisible(hwnd)
-        hwnd_windows.append(hwnd)
-
 def get_name_and_pid(pid, name):
     for process in psutil.process_iter():
         if pid:
@@ -23,11 +18,22 @@ def get_name_and_pid(pid, name):
 
         elif name:
             if name.lower() == process.name().lower():
-                pid = process.pid
                 name = process.name()
+                pid = process.pid
+                for child_process in psutil.Process(pid=process.pid).parents():
+                    if not child_process.name().lower() == process.name().lower():
+                        break
+                    name = child_process.name()
+                    pid = child_process.pid
                 return pid, name
 
     return pid, name
+
+def enum_window_callback(hwnd, pid):
+    _, current_pid = win32process.GetWindowThreadProcessId(hwnd) # _ = tid
+    if pid == current_pid:
+        if win32gui.IsWindowVisible(hwnd):
+            hwnd_windows.append(hwnd)
 
 def choice(options):
     def choice_error():
@@ -62,6 +68,10 @@ if name:
         name = f"{name}.exe"
 
 pid, name = get_name_and_pid(pid, name)
+
+if name and not pid:
+    print(f"{Fore.RED}No process NAME found for process: {name}!")
+    exit(1)
 if not pid:
     print(f"{Fore.RED}No process PID found for name: {name}!")
     exit(1)
@@ -69,25 +79,33 @@ if not name:
     print(f"{Fore.RED}No process NAME found for PID: {pid}!")
     exit(1)
 
-user_action_text = f"{Fore.CYAN}Do you want to pin ({Fore.YELLOW}P{Fore.CYAN}) or unpin ({Fore.YELLOW}U{Fore.CYAN}) the window {Fore.GREEN}{name}{Fore.CYAN} ({Fore.GREEN}{pid}{Fore.CYAN})? [{Fore.YELLOW}P{Fore.CYAN}, {Fore.YELLOW}U{Fore.CYAN}]: "
-user_action = choice(["P", "U"])
-
 hwnd_windows = []
 win32gui.EnumWindows(enum_window_callback, pid)
 if not hwnd_windows:
     print(f"{Fore.RED}For some reasons, HWND have not been found from the window {Fore.GREEN}{name}{Fore.CYAN} ({Fore.GREEN}{pid}{Fore.CYAN})")
+    print(f"{Fore.CYAN}You are probably getting this error message for 2 known reasons:")
+    print(f"{Fore.CYAN}- Your program is minimized to your system tray, so the script ignores it.")
+    print(f"{Fore.CYAN}- Your program doesn't have a GUI (Graphical User Interface), so the script ignores it.")
+    exit(1)
+
+user_action_text = f"{Fore.CYAN}Do you want to ({Fore.YELLOW}P{Fore.CYAN})in, ({Fore.YELLOW}U{Fore.CYAN})npin the window {Fore.GREEN}{name}{Fore.CYAN} ({Fore.GREEN}{pid}{Fore.CYAN}) or ({Fore.YELLOW}C{Fore.CYAN})ancel? [{Fore.YELLOW}P{Fore.CYAN}, {Fore.YELLOW}U{Fore.CYAN}, {Fore.YELLOW}C{Fore.CYAN}]: "
+user_action = choice(["P", "U", "C"])
+if user_action == "C":
+    exit(0)
+
+if not psutil.pid_exists(pid):
+    print(f"{Fore.RED}Window not found, have you actually closed it?")
     exit(1)
 
 win32gui.ShowWindow(hwnd_windows[0], win32con.SW_SHOW)
 if user_action == "P":
     state = win32con.HWND_TOPMOST
-    action = "PIN"
-    optional_message = ""
+    action = "PINNED"
 else:
     state = win32con.HWND_NOTOPMOST
     action = "UNPINNED"
-    optional_message = ", now click on the window in question to apply"
 flags = win32con.SWP_NOMOVE | win32con.SWP_NOSIZE
 win32gui.SetWindowPos(hwnd_windows[0], state, 0,0,0,0, flags)
+win32gui.SetForegroundWindow(hwnd_windows[0])
 
-print(f"{Fore.CYAN}Successfully [{Fore.MAGENTA}{action}{Fore.CYAN}] the window {Fore.GREEN}{name}{Fore.CYAN} ({Fore.GREEN}{pid}{Fore.CYAN}){optional_message}.")
+print(f"{Fore.CYAN}Successfully [{Fore.MAGENTA}{action}{Fore.CYAN}] the window.")
