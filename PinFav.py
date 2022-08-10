@@ -31,16 +31,17 @@ def get_name_and_pid(pid, name):
 
 def choice(options):
     def choice_error():
-        print(f"{Fore.RED}ERROR: Bad option. Options are: {options}")
+        print(f"\n{Fore.RED}ERROR: Bad option. Options are: {options}")
 
     while True:
-        print(user_action_text)
+        print(user_action_text, end="")
         try:
             output = getch().decode().upper()
         except UnicodeDecodeError:
             choice_error()
             continue
         if output in options:
+            print(f"{Fore.YELLOW}{output}")
             return output
         else:
             choice_error()
