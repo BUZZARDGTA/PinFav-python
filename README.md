@@ -12,7 +12,7 @@
 > * Some rare other programs are sometimes also ignored.
 
 *Credits*:
-> @Rosalyn - Original project idea, testing and ideas.
+> @Rosalyn - Original project idea, testing and ideas.<br />
 > @Grub4k - Helped with code readability and better error messages.
 >
 > A project created in the "server.bat" Discord: https://discord.gg/GSVrHag
