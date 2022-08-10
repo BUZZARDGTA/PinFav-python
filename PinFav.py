@@ -81,10 +81,12 @@ win32gui.ShowWindow(hwnd_windows[0], win32con.SW_SHOW)
 if user_action == "P":
     state = win32con.HWND_TOPMOST
     action = "PIN"
+    optional_message = ""
 else:
     state = win32con.HWND_NOTOPMOST
     action = "UNPINNED"
+    optional_message = ", now click on the window in question to apply"
 flags = win32con.SWP_NOMOVE | win32con.SWP_NOSIZE
 win32gui.SetWindowPos(hwnd_windows[0], state, 0,0,0,0, flags)
 
-print(f"{Fore.CYAN}Successfully [{Fore.MAGENTA}{action}{Fore.CYAN}] the window {Fore.GREEN}{name}{Fore.CYAN} ({Fore.GREEN}{pid}{Fore.CYAN}), now click on the window in question to apply.")
+print(f"{Fore.CYAN}Successfully [{Fore.MAGENTA}{action}{Fore.CYAN}] the window {Fore.GREEN}{name}{Fore.CYAN} ({Fore.GREEN}{pid}{Fore.CYAN}){optional_message}.")
