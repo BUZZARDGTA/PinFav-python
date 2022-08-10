@@ -5,7 +5,7 @@
 
 *Showcase*:
 
-> <img src="https://user-images.githubusercontent.com/62464560/184023406-4cba6c9f-0195-4da5-9aee-e7908ab18794.png" width="80%" height="60%">
+> <img src="https://user-images.githubusercontent.com/62464560/184026844-d80d1c3d-418d-4433-9ab4-83b28288ebe0.png" width="80%" height="60%">
 
 *Credits*:
 > @Rosalyn - Original project idea, testing and ideas.<br />
