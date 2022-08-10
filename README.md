@@ -5,7 +5,7 @@
 
 *Showcase*:
 
-> <img src="https://i.imgur.com/R2AdqME.png" width="80%" height="60%">
+> <img src="https://user-images.githubusercontent.com/62464560/183936459-71218557-40f2-42e1-a371-db5fe7af22a3.png" width="80%" height="60%">
 
 *Known Bug*:
 > * Programs minimized in the notification area are ignored.
