@@ -46,12 +46,11 @@ def choice(options):
         except UnicodeDecodeError:
             choice_error()
             continue
-        if output in options:
-            print(f"{Fore.YELLOW}{output}")
-            return output
-        else:
+        if not output in options:
             choice_error()
             continue
+        print(f"{Fore.YELLOW}{output}")
+        return output
 
 pid = name = None
 
