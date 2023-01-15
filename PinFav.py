@@ -22,10 +22,11 @@ def get_pid_name__or__parent_pid_from_name():
         elif name:
             if name.lower() == process.name().lower():
                 found_a_parent_process__flag = False
-                for parent_process in psutil.Process(pid=process.pid).parents():
+                for parent_process in process.parents():
                     if not parent_process.name().lower() == process.name().lower():
                         break
-                    found_a_parent_process__flag = True
+                    if found_a_parent_process__flag is False:
+                        found_a_parent_process__flag = True
                     name = parent_process.name()
                     pid = parent_process.pid
 
